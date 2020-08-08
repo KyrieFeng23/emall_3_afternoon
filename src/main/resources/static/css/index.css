@@ -1,0 +1,40 @@
+a:active,a:visited,a:focus,a:hover{
+    text-decoration: none;
+}
+.b-s-info{
+    line-height: 28px;
+    height: 30px;
+}
+html {
+    overflow-x: hidden; overflow-y: auto;
+}
+.b-s-info a{
+    color: #000;
+}
+.b-s-info a:hover{
+    color: rgb(227,51,51);
+}
+.left-4{
+    padding: 5px;
+}
+.left,.right{
+    border-radius: 5px 5px 5px 5px;
+    background-color: white;
+    padding: 5px;
+    margin-left: 10px;
+}
+.right{
+    position: absolute;
+    left: 52%;
+}
+.goods_name,.goods_describe{
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.goods_name{
+    font-size: 13px;
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ah="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--    <script th:src="@{/js/cart.js}"></script>-->
+    <link rel="stylesheet" th:href="@{/css/order_confirm.css}">
+    <title>确认订单</title>
+</head>
+<body>
+<form action="carts_to_order" method="get">
+    <!--b_s_id=1&address=on&address_id=1&address_id=2&address_id=3&address_id=4&address_id=5&address_id=7&address_id=8&address_id=9&address_id=11&store_id=1&goods_sum=1&goods_money=57.0&1704508670%3A2%7Cpost=+2+&order_sum=72.0&submit=-->
+    <div class="row b-s-info" style="background-color: rgb(245,245,245)">
+        <div class="container">
+            <div class="col-md-2" style="padding: 0px">
+                欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            </div>
+            <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+                <a href="/index_seller">卖家中心</a>
+            </div>
+            <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+                <a href="/index">淘宝网首页</a>
+            </div>
+            <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+                <a href="/index">淘宝网首页</a>
+            </div>
+            <div class="col-md-1">
+                <a th:href="to_collect">收藏夹</a>
+            </div>
+            <div class="col-md-1">
+                <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+                <input type="hidden" th:value="${B_S_INFO.getB_s_id()}" class="b_s_id" name="b_s_id">
+            </div>
+            <div class="col-md-2" align="right">
+                <a href="/logout">退出登录</a>
+            </div>
+        </div>
+    </div>
+
+    <!--	顶栏logo以及流程-->
+    <div class="container-fluid">
+        <div class="header row">
+            <div class="col-md-2 col-md-offset-2"><img src="images/tb-logo.png" class="logo"></div>
+            <div class="col-md-5 col-md-offset-2">
+                <img src="images/order.png" class="logo1">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="page">
+            <div id="content" class="grid-c">
+                <div id="address" class="address" style="margin-top: 20px;" data-spm="2">
+                    <form id="addrForm" action="#">
+                        <p style="border-bottom: 1px solid #999999"><b>确认收货地址</b>
+                            <span class="manage-address">
+                            <a href="/get_address_list" target="_blank" title="管理我的收货地址"
+                               class="J_MakePoint">管理收货地址</a>
+                        </span>
+                        </p>
+                        <ul id="address-list" class="address-list" >
+                            <!--                        <div >-->
+                            <li class="J_Addr J_MakePoint clearfix  J_DefaultAddr " th:each="item, itemStat: ${address_list}">
+                                <s class="J_Marker marker"></s>
+                                <!--                            <span class="marker-tip" th:if="${itemStat.first}">寄送至</span>-->
+                                <div class="address-info">
+                                    <a href="#" class="J_Modify modify J_MakePoint">修改本地址</a>
+                                    <input class="J_MakePoint is-selected" type="radio"  checked="checked" th:if="${itemStat.first}">
+                                    <input class="J_MakePoint is-selected" type="radio" th:if="${!itemStat.first}">
+                                    <label class="user-address">
+                                        <span th:text="${item.address}"></span>
+                                        <span th:text="${item.address_detail}"></span>
+                                        <span th:text="${item.postcode}"></span>
+                                        (<span th:text="${item.addresssee}"></span> 收)
+                                        <em><span th:text="${item.telephone}"></span></em>
+                                        <input type="hidden" class="address_id" th:value="${item.getAddress_id()}" name="address_id" th:if="${itemStat.first}">
+                                    </label>
+                                    <em class="tip" th:if="${itemStat.first}">默认地址</em>
+                                    <a class="J_DefaultHandle set-default J_MakePoint" th:href="@{set_default_status_in_order(address_id=${item.address_id}, b_s_id=${item.b_s_id})}"
+                                       th:if="${!itemStat.first}" onclick="showtip()">
+                                        设置为默认地址</a>
+                                </div>
+                            </li>
+                            <!--                        </div>-->
+                        </ul>
+                        <ul id="J_MoreAddress" class="address-list hidden">
+
+                        </ul>
+
+                        <div class="address-bar">
+                            <a th:href="@{get_address_list}" class="new J_MakePoint" id="J_NewAddressBtn">使用新地址</a>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!--            确认订单信息区start-->
+                <div>
+                    <p style="border-bottom: 1px solid #999999"><b>确认订单信息</b>
+                        <table cellspacing="0" cellpadding="0" class="order-table" id="J_OrderTable" summary="统一下单订单信息区域">
+                            <caption style="display: none">统一下单订单信息区域</caption>
+                            <thead>
+                            <tr>
+                                <th class="s-title">店铺宝贝<hr/></th>
+                                <th class="s-price">单价(元)<hr/></th>
+                                <th class="s-amount">数量<hr/></th>
+                                <th class="s-agio">优惠方式(元)<hr/></th>
+                                <th class="s-total">小计(元)<hr/></th>
+                            </tr>
+                            </thead>
+                            <tbody data-spm="3" class="J_Shop">
+                            <tr class="first"><td colspan="5"></td></tr>
+                            <tr class="shop blue-line">
+                                <td colspan="3">
+                                    店铺：<a class="J_ShopName J_MakePoint" th:text="${store_info.getStore_name()}"></a>
+                                    <input class="store_id" th:value="${store_info.getStore_id()}" type="hidden" name="store_id">
+                                    <span class="seller">卖家：<a href="#" target="_blank" class="J_MakePoint">赛西湖</a></span>
+                                    <span class="J_WangWang" data-display="inline" ></span>
+                                </td>
+                                <td colspan="2" class="promo">
+                                    <div>
+                                        <ul class="scrolling-promo-hint J_ScrollingPromoHint">
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="item" >
+                                <td class="s-title">
+                                    <a href="#" class="J_MakePoint">
+                                        <img th:src="${photo_path}" class="itempic">
+                                        <span class="title J_MakePoint" th:text="${goods_info.getGoods_name()}"></span>
+                                        <input th:value="${goods_id}" type="hidden" class="goods_id" name="goods_id">
+                                    </a>
+
+                                    <div class="props">
+                                        <input name="goods_property" type="hidden" value="机身颜色: 黑">
+                                        <span>机身颜色: 黑 </span>
+                                        <span>手机套餐: 套餐二 </span>
+                                        <span>机身内存: 4G </span>
+                                        <span>版本: 中国大陆 </span>
+                                    </div>
+                                    <a title="消费者保障服务，卖家承诺商品如实描述" href="#" target="_blank">
+                                        <img src="http://img03.taobaocdn.com/tps/i3/T1bnR4XEBhXXcQVo..-14-16.png"/>
+                                    </a>
+                                    <div>
+                                        <span style="color:gray;">卖家承诺72小时内发货</span>
+                                    </div>
+                                </td>
+                                <td class="s-price">
+                            <span class='price '>
+                                <span class="style-normal-small-black J_ItemPrice goods_actual_price" th:text="${goods_actual_price}"></span>
+                            </span>
+                                </td>
+                                <td class="s-amount" data-point-url="">
+                                    <input type="hidden" class="J_Quantity" value="1"><span th:text="${goods_sum}" class="goods_sum"></span>
+                                    <input name="goods_sum" th:value="${goods_sum}" type="hidden">
+                                </td>
+                                <td class="s-agio">
+                                    <div class="J_Promotion promotion" data-point-url="">无优惠</div>
+                                </td>
+                                <td class="s-total">
+                        <span class='price '>
+                        <span class="style-normal-bold-red J_ItemTotal goods_money" th:text="${goods_money}"></span>
+                            <input name="goods_money" th:value="${goods_money}" type="hidden">
+
+                        </span>
+                                </td>
+                            </tr>
+                            <tr class="item-service">
+                                <td colspan="5" class="servicearea" style="display: none"></td>
+                            </tr>
+
+                            <tr class="other other-line">
+                                <td colspan="5">
+                                    <ul class="dib-wrap">
+                                        <li class="dib user-info">
+                                            <ul class="wrap">
+                                                <li>
+                                                    <div>
+                                                        <span>给卖家留言：</span><br>
+                                                        <textarea style="width:350px;height:44px;" placeholder="选填：对本次交易的补充说明（建议填写已经和卖家达成一致的说明）"></textarea>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dib extra-info">
+                                            <div class="farearea">
+                                                <ul class="dib-wrap J_farearea">
+                                                    <li class="dib title">运送方式：</li>
+                                                    <li class="dib sel">
+                                                        <select class="J_Fare">
+                                                            <option data-fare="1500" value=" 2 " data-codServiceType="2" data-level=""  selected="selected"  >
+                                                                快递 15.00元
+                                                            </option>
+                                                            <option data-fare="2500" value=" 7 " data-codServiceType="7" data-level=""  >
+                                                                EMS 15.00元
+                                                            </option>
+                                                            <option data-fare="1500" value=" 1 " data-codServiceType="1" data-level=""  >
+                                                                平邮 15.00元
+                                                            </option>
+                                                        </select>
+                                                        <em tabindex="0" class="J_FareFree" style="display: none">免邮费</em>
+                                                    </li>
+                                                    <li class="dib fee">
+                                                <span class='price '>
+                                                <em class="style-normal-bold-red J_FareSum"  >15.00</em>
+                                                </span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="extra-area">
+                                                <ul class="dib-wrap">
+                                                    <li class="dib title">发货时间：</li>
+                                                    <li class="dib content">卖家承诺订单在买家付款后，72小时内<a href="#">发货</a></li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="servicearea" style="display: none"></div>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+
+                            <tr class="shop-total blue-line">
+                                <td colspan="5">店铺合计(<span class="J_Exclude" style="display: none">不</span>含运费<span class="J_ServiceText" style="display: none">，服务费</span>)：
+                                    <span class='price g_price '>
+                            <span>&yen;</span><em class="style-middle-bold-red J_ShopTotal" th:text="${goods_money+15}"></em>
+                            </span>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5">
+
+                                    <div class="order-go" data-spm="4">
+                                        <div class="J_AddressConfirm address-confirm">
+                                            <div class="kd-popup pop-back" style="margin-bottom: 40px;">
+                                                <div class="box">
+                                                    <div class="bd">
+                                                        <div class="point-in">
+
+                                                            <em class="t">实付款：</em>  <span class='price g_price '>
+                                                        <span>￥</span><em class="style-large-bold-red" id="J_ActualFee" th:text="${goods_money+15}"></em>
+                                                        <input name="order_money" th:value="${goods_money+15}" type="hidden">
+                                                        </span>
+                                                        </div>
+
+                                                        <ul>
+                                                            <li><em>寄送至:</em><span id="J_AddrConfirm" style="word-break: break-all;">
+                                                        <span th:text="${default_address.getAddress()}"></span>
+                                                        <input type="hidden" name="address_1" th:value="${default_address.getAddress()}">
+                                                        <span th:text="${default_address.getAddress_detail()}"></span>
+                                                        <input type="hidden" name="address_detail" th:value="${default_address.getAddress_detail()}">
+                                                        <span th:text="${default_address.getPostcode()}"></span>
+                                                    </span></li>
+                                                            <li><em>收货人:</em><span id="J_AddrNameConfirm"><span th:text="${default_address.getAddresssee()}"></span>
+                                                        <em><span th:text="${default_address.getTelephone()}"></span></em> </span></li>
+                                                        </ul>
+                                                        <input type="hidden" name="link_man" th:value="${default_address.getAddresssee()}">
+                                                        <input type="hidden" name="link_telephone" th:value="${default_address.getTelephone()}">
+
+                                                    </div>
+                                                </div>
+                                                <button id="J_Go" class=" btn-go to-order" type="submit" name="submit">提交订单<b class="dpl-button"></b></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="J_confirmError confirm-error">
+                                            <div class="msg J_shopPointError" style="display: none;"><p class="error">积分点数必须为大于0的整数</p></div>
+            </div>
+
+
+            <div class="msg" style="clear: both;">
+                <p class="tips naked" style="float:right;padding-right: 0">若价格变动，请在提交订单后联系卖家改价，并查看已买到的宝贝</p>
+            </div>
+        </div>
+        </td>
+        </tr>
+        </tfoot>
+        </table>
+    </div>
+    <!--            确认订单信息区end-->
+
+    </div>
+    </div>
+    </div>
+</form>
+<script type="text/javascript">
+    function showtip() {
+        alert("设置成功！")
+        location.reload();
+    }
+</script>
+</body>
+</html>

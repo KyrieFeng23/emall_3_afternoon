@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/order_info_list.css}">
+    <script src="js/order_info_list.js"></script>
+    <title>已买到的宝贝</title>
+</head>
+<body>
+<!--顶栏-->
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<div class="row my-tb" style="background-color: rgb(255,68,1);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/get_personal_info">我的淘宝</a></span>
+        </div>
+        <div class="col-md-1">
+            <span>首页</span>
+        </div>
+        <div class="col-md-1">
+            <span>账户设置</span>
+        </div>
+        <div class="col-md-4 col-md-offset-4" align="right">
+            <div class="search" style="margin: 0px;padding: 0px">
+                <input width="100px" class="searchinput">
+                <button class="searchbtn">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!--主体-->
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul>
+                <li style="color: rgb(255,68,1)"><b>全部功能</b></li>
+                <li><a href="/get_address_list">收货地址管理</a></li>
+                <li><a href="/to_my_info">我的资料</a></li>
+                <li><a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}" target="_blank">我的购物车</a></li>
+                <input type="hidden" class="b_s_id" th:value="${B_S_INFO.getB_s_id()}">
+                <li><a th:href="to_collect">我的收藏夹</a></li>
+                <li><a href="#" class="goods" style="color: rgb(255,68,1)">已买到的宝贝</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-10" style="padding: 0px">
+            <div class="row" align="center" style="border-bottom:1px solid #999999">
+                <div class="col-md-2" style="border-bottom: 1px solid rgb(255,68,1)">
+                    所有订单
+                </div>
+                <div class="col-md-2">
+                    待付款
+                </div>
+                <div class="col-md-2">
+                    待发货
+                </div>
+                <div class="col-md-2">
+                    待收货
+                </div>
+            </div>
+<!--            首行段介绍-->
+            <br>
+            <div class="panel panel-default row" style="text-align: center;margin-bottom: 5px">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3" >
+                            宝贝
+                        </div>
+                        <div class="col-md-1" >
+                            单价
+                        </div>
+                        <div class="col-md-1" >
+                            数量
+                        </div>
+                        <div class="col-md-2" >
+                            商品操作
+                        </div>
+                        <div class="col-md-2" >
+                            实付款
+                        </div>
+                        <div class="col-md-2" >
+                            交易状态
+                        </div>
+                        <div class="col-md-1" style="padding: 0px">
+                            交易操作
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            首行end-->
+
+<!--            分页-->
+            <div class="page row" style="margin-bottom: 5px;text-align: right">
+                <div class="col-md-3" style="margin: 0;padding: 0">
+                    <input class="form-control search-content" placeholder="请输入商品名称或订单号搜索">
+
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-default order-search">搜索</button>
+                </div>
+                <div class="col-md-8" align="right" style="margin: 0;padding: 0">
+                    <span>当前第 <span th:text="${start}"></span> 页，共 <span th:text="${totalPage}"></span> 页</span>
+                    <span>搜索到 <span th:text="${count}"></span> 件商品，每页显示: <span th:text="${page_size}"></span> 件</span>
+                    <input type="hidden" th:value="${start}" class="start">
+                    <input type="hidden" th:value="${page_size}" class="page_size">
+                    <input type="hidden" th:value="${totalPage}" class="totalPage">
+                    <span th:if="${start!=1}">
+                  <a href="#"><button type="button" class="btn btn-default first-page">首页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default pre-page">上一页</button></a>
+            </span>
+                    <span th:if="${start==1}">
+                  <button type="button" class="btn btn-default first-page" disabled="disabled">首页</button>
+                  <button type="button" class="btn btn-default pre-page" disabled="disabled">上一页</button>
+            </span>
+                    <span th:if="${start!=totalPage}">
+                  <a href="#"><button type="button" class="btn btn-default next-page">下一页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default last-page">尾页</button></a>
+            </span>
+                    <span th:if="${start==totalPage}">
+                  <button type="button" class="btn btn-default next-page" disabled="disabled">下一页</button>
+                  <button type="button" class="btn btn-default last-page" disabled="disabled">尾页</button>
+            </span>
+                </div>
+            </div>
+<!--            分页end-->
+
+<!--            商品详细each-->
+            <div th:if="${order_info_list.size()==0}" style="text-align: center;margin-top: 100px"><h3>当前状态没有订单哦！</h3>
+            <br>
+                <h4><a href="/index">去首页逛逛</a></h4>
+            </div>
+            <div th:each="orderlist,orderliststatus:${order_info_list}" class="row" style="text-align: center">
+
+                <input type="hidden" class="order_id">
+                <div class="panel panel-default">
+                    <div class="panel-heading shop_info" style="height: 40px" align="left">
+                        <h3 class="panel-title">
+                            <div class="col-md-5">
+                            <input type="checkbox" class=""> <span th:text="${orderlist.getOrder_time().substring(0,10)}"></span>
+                                <span th:text="${'订单号：'+orderlist.getOrder_no()}"></span>
+                            </div>
+                            <div class="col-md-5" align="left">
+                                <input th:value="${orderlist.getStore_id()}" class="store_id" type="hidden">
+                                <a class="store"><img src="images/wangwang.png"><span class="store_name"></span></a>
+                            </div>
+                        </h3>
+                    </div>
+                    <div th:each="order_item_infolist, item_infoState : ${orderlist.getOrder_item_infoList()}" id="goods_checked" class="order_content"
+                         style="border-bottom: 1px solid #999999">
+
+                        <div class="panel-body order_lists">
+                            <div class="col-md-3" style="padding: 0px" align="center">
+                                <input th:value="${order_item_infolist.getGoods_id()}" type="hidden" class="goods_id">
+                                <a th:href="@{show_a_goods_info_detail(goods_id=${order_item_infolist.getGoods_id()})}">
+                                    <img src="#" class="img" width="50px" align="left">
+                               <b><span class="goods_name" style="padding-left: 5px"></span></b></a><br>
+                                <span th:text="${order_item_infolist.getGoods_property()}" class="goods_property"></span>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="goods_price"></span>
+                            </div>
+                            <div class="col-md-1">
+                                <span th:text="${order_item_infolist.getGoods_sum()}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="#">退货/退款</a><br>
+                                <a href="#">投诉商家</a>
+                            </div>
+                            <div class="col-md-2">
+                                <b><div th:text="${'￥'+orderlist.getOrder_money()}" class="sum_price"
+                                        style="margin: 0px;padding: 0px"></div></b><br>
+                                <div style="color: #999999;font-size: 10px;margin: -13px;">（含运费：￥15.00）</div>
+                            </div>
+                            <div class="col-md-2">
+                                <span th:if="${orderlist.getPay_status()==0&&orderlist.getOrder_status()==0}">订单已关闭</span>
+                                <a href="#" class="pay" onClick="return confirm('确认付款成功？');"><span th:if="${orderlist.getOrder_status()==1&&orderlist.getPay_status()==0}" th:text="点击去付款"></span>
+                                </a>
+                                <br th:if="${orderlist.getPay_status()==0&&orderlist.getOrder_status()==1}">
+                                    <a href="#" class="cancel-order"><span th:if="${orderlist.getPay_status()==0&&orderlist.getOrder_status()==1}" onClick="return confirm('确认要取消订单吗？');">取消订单</span></a>
+
+                                <a href="#"><span th:if="${orderlist.getPay_status()==1}" th:text="买家已付款"></span>
+                                <br th:if="${orderlist.getPay_status()==1}">
+                                    <span th:if="${orderlist.getPay_status()==1}">等待卖家发货</span>
+                                </a>
+                        </div>
+                            <div class="col-md-1">
+                                <a href="#" class="delete" onClick="return confirm('确认要永久删除该订单吗？');"><span class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+<!--            商品详细each end-->
+
+
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

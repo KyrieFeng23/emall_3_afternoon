@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+     <link rel="stylesheet" th:href="@{/bootstrap/js/bootstrap.min.js}"/>
+     <link rel="stylesheet" th:href="@{/js/jquery-1.12.1.min.js}"/> -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/cart.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize1.css}">
+    <link rel="stylesheet" th:href="@{/css/show_cart.css}">
+    <title>我的购物车</title>
+<!--    <base th:href="@{/}">-->
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+    <div class="col-md-2" style="padding: 0px">
+        欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        <input type="hidden" th:value="${B_S_INFO.getB_s_id()}" name="b_s_id">
+    </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+    <div class="col-md-1">
+        <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+    </div>
+    <div class="col-md-2" align="right">
+        <a href="/logout">退出登录</a>
+    </div>
+    </div>
+</div>
+<div class="row tb-logo" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <a href="/index"><img src="images/cart.png" class="my-tb-logo"></a>
+        </div>
+        <div class="col-md-4 col-md-offset-6" align="right">
+            <div class="search" style="margin: 0;padding: 0">
+                <input width="100px" class="searchinput">
+                <button class="searchbtn">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <form action="show_confirm_order_by_cart" method="get" id="form" class="form">
+    <div class="empty">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-1" >
+                    <input type="checkbox" id="all" class="whole_check"> 全选
+                </div>
+                <div class="col-md-2" >
+                    图片信息
+                </div>
+                <div class="col-md-5" >
+                    商品信息
+                </div>
+                <div class="col-md-1" >
+                    单价
+                </div>
+                <div class="col-md-1" >
+                    数量
+                </div>
+                <div class="col-md-1" >
+                    金额
+                </div>
+                <div class="col-md-1" >
+                    操作
+                </div>
+            </div>
+        </div>
+    </div>
+    <input th:value="${cart_item_list}" type="hidden" id="list">
+    <input type="hidden" class="goods_length" name="goods_length">
+    <div th:each="item_store, itemState : ${cart_item_list}" class="cartBox">
+        <div class="panel panel-default">
+            <div class="panel-heading shop_info">
+                <h3 class="panel-title">
+                    <input type="checkbox" class="store_info all_select shopChoice"> 店铺：
+                    <a href="#" th:text="${item_store.store_name}" class="store_name"></a>
+                </h3>
+            </div>
+            <div th:each="item_goods, itemState : ${item_store.goods_itemList}" id="goods_checked" class="order_content">
+                <div class="panel-body order_lists">
+                    <div class="col-md-1 all_select" >
+                        <input type="checkbox" class="goods_info son_check">
+                        <input type="hidden" th:value="${item_goods.getGoods_info().getGoods_id()}" class="goods_id">
+                        <input type="hidden"  class="summ" name="summ">
+                    </div>
+                    <a href="#" class="detail">
+                        <div class="col-md-2" style="padding: 0px">
+
+
+                        <input type="hidden" th:value="${item_goods.goods_info.goods_actual_price}" class="actual_price">
+                        <img th:src="${item_goods.getGoods_photo_path()}" class="img" id="img" width="100px">
+                        </div>
+                   <div class="col-md-5">
+                       <span th:text="${item_goods.goods_info.goods_name}"></span>
+                       <span style="text-decoration: line-through" th:text="${item_goods.goods_info.goods_name}" th:if="${item_goods.goods_info.goods_status==1}"></span><br>
+                       <span th:text="${item_goods.goods_info.goods_describe}"></span>
+                    </div></a>
+                    <div class="col-md-1">
+                        <div th:text="${'￥'+ item_goods.goods_info.goods_price}" class="price"></div>
+                        <b><div th:text="${'￥'+ item_goods.goods_info.goods_actual_price}" class="actual_price"></div></b>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="row">
+                            <div class="form-inline">
+                                <div class="amount_box" style="margin: 0px;padding:0px;text-align: center">
+                                    <a th:if="${item_goods.account>1}" th:href="@{update_cart(goods_id=${item_goods.getGoods_info().getGoods_id()}
+                                    ,store_id=${item_goods.getGoods_info().getStore_id()}
+                                    ,goods_sum=${item_goods.account -1}
+                                    ,goods_money=${item_goods.goods_money -item_goods.goods_info.goods_actual_price}
+                                    )}" class="reduce reSty">-</a>
+                                    <span th:if="${item_goods.account==1}" class="">-</span>
+                                    <input type="text" size="1" th:value="${item_goods.account}" class="sum text">
+                                    <a th:href="@{update_cart(goods_id=${item_goods.getGoods_info().getGoods_id()}
+                                    ,store_id=${item_goods.getGoods_info().getStore_id()}
+                                    ,goods_sum=${item_goods.account+1}
+                                    ,goods_money=${item_goods.goods_money+item_goods.goods_info.goods_actual_price}
+                                    )}" class="plus">+</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1" >
+                        <b><div th:text="${'￥'+ item_goods.goods_money}" class="sum_price"></div></b>
+                    </div>
+                    <div class="col-md-1" >
+                        <div><a th:href="@{delete_goods_in_cart(goods_id=${item_goods.getGoods_info().getGoods_id()},store_id=${item_goods.getGoods_info().getStore_id()})}"
+                                onClick="return confirm('您确认要删除该宝贝吗？');">移除商品</a>
+                        <span th:if="${item_goods.goods_info.goods_status==1}">已失效</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<!--    <div class="empty">-->
+<!--    </div>-->
+    <div class="panel panel-default">
+        <div class="panel-body" style="margin-top: 0px;margin-bottom:0px;padding-top: 0px;padding-bottom: 0px;margin-right: 0px;padding-right: 0px">
+            <div class="row bar-wrapper">
+                <div class="col-md-1" style="padding-top:12px;padding-bottom:10px ">
+                    <input type="checkbox" class="whole_check"> 全选
+                </div>
+                <div class="col-md-1" style="padding-top:12px;padding-bottom:10px ">
+                    删除
+                </div>
+                <div class="col-md-2" style="padding-top:12px;padding-bottom:10px ">
+                    <a class="clean" href="#">清除失效商品信息</a>
+                </div>
+                <div class="col-md-2" style="padding-top:12px;padding-bottom:10px ">
+                    <a class="collect" href="#">移入收藏夹</a>
+                </div>
+                <div class="col-md-2" style="padding-top:12px;padding-bottom:10px ">
+                    已选商品 <strong class="piece_num">0</strong> 件
+                </div>
+                <div class="col-md-3" style="padding-top:12px;padding-bottom:10px ">
+                    合计（不含运费）：
+                    <strong class="total_text">￥0.0</strong>
+                </div>
+                <div class="col-md-1">
+                    <div class="calBtn"><a class="pay">结算</a></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var list=$("#list").val()
+        var empty=$(".empty")
+        var html=
+            "<br><br><br>"+
+        "<div class='row'>"+
+            "<div class='col-md-1'>"+
+            "<img src='images/emptycart.jpg'>"+
+            "</div>"+
+            "<div class='col-md-4'>"+
+            "<div class='row'>"+
+            "您的购物车还是空的，赶紧行动吧！您可以："+
+            "</div>"+
+                "<br>"+
+            "<div class='row'>"+
+            "看看 我的收藏夹"+
+            "</div>"+
+            "<div class='row'>"+
+            "看看 已买到的宝贝"+
+            "</div>"+
+            "</div>"+
+            "</div>"
+        if (list==="[]"||list==='[]'||list===''){
+            empty.html(html);
+        }
+
+
+        var goods_id = [];
+        var detail = [];
+        $(".goods_id").each(function(){
+            goods_id.push($(this).val());
+        });
+
+        $(".detail").each(function(){
+            detail.push($(this));
+        });
+        for (var i=0;i<detail.length;i++) {
+            detail[i].attr("href","show_a_goods_info_detail?goods_id=" + goods_id[i])
+        }
+    });
+
+    $(".store_name").click(function (){
+        var store_id = $(".store_id").val()
+        location.href = "show_store_goods?store_id=" + store_id+"&start="
+    });
+
+    $(".sum").blur(function () {
+        var num=$(".sum").val();
+        var goods_id=$(".goods_id").val();
+        var store_id=$(".store_id").val();
+        var goods_money=$(".actual_price").val()*num;
+        location.href="update_cart?goods_id="+goods_id+"&store_id="+ store_id+"&goods_sum="+num
+            +"&goods_money="+goods_money;
+    });
+
+
+    $(".pay").click(function () {
+        var goods_id=[];
+        var checks=[];
+        var checked=[];
+        $(".son_check").each(function () {
+            checks.push($(this));
+            if ($(this).is(':checked')){
+            checked.push($(this));
+            }
+        })
+        $(".goods_length").val(checked.length);
+        for (var i=0;i<checked.length;i++){
+            goods_id.push(checked[i].next(".goods_id"));
+
+        }
+        $(".summ").val($(".piece_num").text());
+        for (var j=0;j<goods_id.length;j++){
+            goods_id[j].attr('name','checked'+j);
+        }
+        $(".form").submit();
+    })
+
+
+    //收藏夹
+    $(".collect").click(function () {
+        var goods_id=[];
+        var checks=[];
+        var checked=[];
+        var goods_ids=""
+        $(".son_check").each(function () {
+            checks.push($(this));
+            if ($(this).is(':checked')){
+                checked.push($(this));
+            }
+        })
+        $(".goods_length").val(checked.length);
+        for (var i=0;i<checked.length;i++){
+            goods_id.push(checked[i].next(".goods_id"));
+        }
+        for (var j=0;j<goods_id.length;j++){
+            goods_id[j].attr('name','checked'+j);
+            goods_ids+="&goods_id"+j+"="+goods_id[j].val();
+        }
+        goods_ids=goods_ids.substring(1);
+        location.href="add_to_collect?"+goods_ids+"&goods_length="+checked.length;
+
+    })
+
+
+    //清空失效
+    $(".clean").click(function () {
+        var goods_id=[];
+        var checks=[];
+        var goods_ids=""
+        $(".son_check").each(function () {
+            checks.push($(this));
+        })
+        $(".goods_length").val(checks.length);
+        for (var i=0;i<checks.length;i++){
+            goods_id.push(checks[i].next(".goods_id"));
+        }
+
+        for (var j=0;j<goods_id.length;j++){
+            goods_id[j].attr('name','checked'+j);
+            goods_ids+="&goods_id"+j+"="+goods_id[j].val();
+        }
+        goods_ids=goods_ids.substring(1);
+        location.href="clean_goods?"+goods_ids+"&goods_length="+checked.length;
+
+    })
+
+</script>
+</body>
+</html>

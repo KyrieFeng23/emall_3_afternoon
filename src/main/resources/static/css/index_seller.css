@@ -1,0 +1,57 @@
+a:active,a:visited,a:focus,a:hover{
+    text-decoration: none;
+}
+.b-s-info{
+    line-height: 30px;
+    height: 30px;
+}
+html {
+    overflow-x: hidden; overflow-y: auto;
+}
+.b-s-info a{
+    color: #000;
+}
+.b-s-info a:hover{
+    color: rgb(46,135,242);
+}
+ul,li{
+    padding: 5px;
+    margin:0;
+    list-style:none;
+    color: black;
+}
+ul li a:hover{
+    color: rgb(46,135,242);
+}
+.my-tb{
+    height: 60px;
+    line-height: 60px;
+}
+.my-tb .container div span{
+    color: white;
+}
+a{
+    color: black;
+}
+a:hover{
+    color: rgb(46,135,242);
+}
+.store_describe{
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.store_detail{
+    height: 30px;
+    line-height: 30px;
+}
+
+.select-div{
+    margin: 20px 0px 20px 0px;
+}
+.select-div span{
+    margin: 10px 0 10px 0;
+    font-weight: bold;
+    font-size: 20px;
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/taobao_goods.css}">
+    <title>搜淘宝-搜索结果</title>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+<div class="row tb-logo" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <a href="/index"><img src="images/tb-logo.png" class="my-tb-logo"></a>
+        </div>
+        <div class="col-md-10" align="right">
+            <div class="search" style="margin: 0;padding: 0">
+                <input class="search-content search-in" th:value="${query_value}">
+                <button class="search-but">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div><input type="hidden" id="store_id"></div>
+    <div class="col-md-12 title" style="height: 30px;line-height: 30px;text-align: center;border-bottom: 1px solid rgb(255,68,0);margin-top: 10px;padding: 0px">
+            <div class="col-md-1" style="background-color: rgb(255,68,0);color: white">
+                所有宝贝
+            </div>
+            <div class="col-md-1">
+                天猫
+            </div>
+            <div class="col-md-1">
+                二手
+            </div>
+    </div>
+    <div class="col-md-12" style="padding: 0px;background-color: rgb(245,248,250);height: 100%">
+        <div class="col-md-12" style="padding: 0px" th:if="${count!=0}">
+            <div class="col-md-2 left-4" th:each="goodslist,goodsliststate:${goods_info}" style="background-color: white;border-radius: 5px">
+                <a class="detail" href="#">
+                    <img th:src="${goodslist.getGoods_photo_path_infoList().get(0).getPath_name()}" class="img-rounded" width="100%">
+                    <br>
+                    <div class="goods_money" th:text="${'￥'+goodslist.getGoods_actual_price()}" style="color:rgb(255,68,0)">
+                    </div>
+                    <b><div th:text="${goodslist.getGoods_name()}" class="goods_name"></div></b>
+                    <div class="goods_describe" th:text="${goodslist.getGoods_describe()}"></div>
+                </a>
+                <u><a class="store_name" style="padding: 0px 5px 0px 5px">
+                </a></u>
+                <input th:value="${goodslist.getGoods_id()}" type="hidden" class="goods_id">
+            </div>
+        </div>
+        <div class="col-md-12" style="padding: 0px;text-align: center" th:if="${count==0}">
+            <span>
+                <h3 style="line-height: 100px;height: 100px">没有搜索到该商品哦，换一个关键词再试试吧~</h3>
+            </span>
+        </div>
+
+        <!--        分页部分-->
+        <div class="col-md-12" align="left">
+            <span>当前第 <span th:text="${start}"></span> 页，共 <span th:text="${totalPage}"></span> 页</span>
+            <span>搜索到 <span th:text="${count}"></span> 件商品，每页显示: <span th:text="${page_size}"></span> 件</span>
+            <input type="hidden" th:value="${start}" class="start">
+            <input type="hidden" th:value="${page_size}" class="page_size">
+            <input type="hidden" th:value="${totalPage}" class="totalPage">
+            <span th:if="${start!=1}">
+                  <a href="#"><button type="button" class="btn btn-default first-page">首页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default pre-page">上一页</button></a>
+            </span>
+            <span th:if="${start==1}">
+                  <button type="button" class="btn btn-default first-page" disabled="disabled">首页</button>
+                  <button type="button" class="btn btn-default pre-page" disabled="disabled">上一页</button>
+            </span>
+            <span th:if="${start!=totalPage}">
+                  <a href="#"><button type="button" class="btn btn-default next-page">下一页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default last-page">尾页</button></a>
+            </span>
+            <span th:if="${start==totalPage}">
+                  <button type="button" class="btn btn-default next-page" disabled="disabled">下一页</button>
+                  <button type="button" class="btn btn-default last-page" disabled="disabled">尾页</button>
+            </span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/show_taobao_search.js"></script>
+</body>
+</html>

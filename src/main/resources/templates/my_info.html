@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" href="css/my_info.css">
+    <title>我的淘宝-个人资料</title>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $(".goods").click(function (){
+                var b_s_id = $(".b_s_id").val()
+                location.href = "get_order_list_by_b_s_id?b_s_id=" + b_s_id+"&start=&query_value=";
+            });
+
+            $(".save").click(function () {
+                alert("保存成功！")
+            })
+        })
+    </script>
+</head>
+<body>
+<!--顶栏-->
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            <input th:value="${B_S_INFO.getB_s_id()}" type="hidden" class="b_s_id">
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}" target="_blank">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<div class="row my-tb" style="background-color: rgb(255,68,1);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/get_personal_info">我的淘宝</a></span>
+        </div>
+        <div class="col-md-1">
+            <span>首页</span>
+        </div>
+        <div class="col-md-1">
+            <span>账户设置</span>
+        </div>
+        <div class="col-md-4 col-md-offset-4" align="right">
+            <div class="search" style="margin: 0px;padding: 0px">
+            <input width="100px" class="searchinput">
+            <button class="searchbtn">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!--主体-->
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul>
+                <li style="color: rgb(255,68,1)"><b>全部功能</b></li>
+                <li><a href="/get_address_list">收货地址管理</a></li>
+                <li><a href="/to_my_info" style="color: rgb(255,68,1)">我的资料</a></li>
+                <li><a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}" target="_blank">我的购物车</a></li>
+                <li><a th:href="to_collect">我的收藏夹</a></li>
+                <li><a href="#" class="goods">已买到的宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-10" style="border-left: 1px solid #999999;padding-left: 50px">
+            <form action="update_b_s_info" method="get">
+            <div class="my-info">
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-6">
+                        <input type="hidden" th:value="${B_S_INFO.getB_s_id()}" name="b_s_id">
+                    <span>亲爱的 <b><span th:text="${B_S_INFO.getNickname().substring(0,1)+'***'+B_S_INFO.getNickname().charAt(B_S_INFO.getNickname().length()-1)}">
+                    </span></b> ，填写真实的资料，有助于好友找到你哦。</span>
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>当前头像：</span>
+                    </div>
+                    <div class="col-md-3">
+                    <img th:src="${B_S_INFO.getIcon()}" width="80px">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                    <span>*昵称：</span>
+                    </div>
+                    <div class="col-md-6">
+                        <input th:value="${B_S_INFO.getNickname()}" name="nickname" class="form-control nickname" style="width: 30%">
+                        <span style="color: #999999;font-size: 12px">*昵称填写须知：与淘宝业务或卖家品牌冲突的昵称，淘宝将有可能收回</span>
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>密码：</span>
+                    </div>
+                    <div class="col-md-6" >
+                        <input th:value="${B_S_INFO.getPwd()}" name="pwd" class="form-control b_s_name" type="password" style="width: 30%">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>真实姓名：</span>
+                    </div>
+                    <div class="col-md-6" >
+                        <input th:value="${B_S_INFO.getB_s_name()}" name="b_s_name" class="form-control b_s_name" style="width: 30%">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>*性别：</span>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="radio" name="sex" value="1" checked="checked" th:if="${B_S_INFO.getSex()==1}"/>
+                        <input type="radio" name="sex" value="1" th:if="${B_S_INFO.getSex()!=1}"/>男
+                        <input type="radio" name="sex" value="2" checked="checked" th:if="${B_S_INFO.getSex()==2}"/>
+                        <input type="radio" name="sex" value="2" th:if="${B_S_INFO.getSex()!=2}"/>女
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>联系电话：</span>
+                    </div>
+                    <div class="col-md-5" >
+                        <input th:value="${B_S_INFO.getTelephone()}" name="telephone" class="form-control" style="width: 60%">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>邮箱：</span>
+                    </div>
+                    <div class="col-md-5">
+                        <input th:value="${B_S_INFO.getEmail()}" name="email" class="form-control" style="width: 60%">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>居住地：</span>
+                    </div>
+                    <div class="col-md-6">
+                        <input th:value="${B_S_INFO.getHome()}" name="home" class="form-control">
+                        <input th:value="${B_S_INFO.getHome_detail()}" name="home_detail" class="form-control">
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>上次登录时间：</span>
+                    </div>
+                    <div class="col-md-5">
+                        <label th:text="${B_S_INFO.getLast_login_time().substring(0,16)}"></label>
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <span>注册时间：</span>
+                    </div>
+                    <div class="col-md-5">
+                        <label th:text="${B_S_INFO.getRegister_time().substring(0,10)}"></label>
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px 0px 10px 0px">
+                    <div class="col-md-2">
+                        <button class="btn btn-default save" type="submit" style="background-color: rgb(255,68,1);color: white">保存</button>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+	overflow-x: hidden; overflow-y: auto;
+}
+.price{
+	color: #6c757d;
+	text-decoration: line-through
+}
+.img{
+	width:50%;
+	height:auto;
+}
+.sum_price{
+	color: crimson;
+}
+.actual_price{
+	color: red;
+}
+.b-s-info{
+	line-height: 28px;
+	height: 30px;
+}
+.bar-wrapper strong{
+	color: #f40;
+}
+.bar-wrapper .calBtn a{
+	display: block;
+	width: 150%;
+	margin-left: -32px;
+	height: 100%;
+	color: #fff;
+	background: #B0B0B0;
+	cursor: not-allowed;
+	font-size: 15px;
+	/*letter-spacing: 5px;*/
+	text-decoration: none;
+	line-height: 50px;
+	text-align: center;
+	border-radius: 2px;
+}
+
+.bar-wrapper .calBtn a.btn_sty{
+	background: #f40;
+	cursor: pointer;
+}
+input.text{
+	text-align:center;
+}
+.amount_box a{
+	/*height: 23px;*/
+	width: 15px;
+	border: 1px solid #e5e5e5;
+	background: #f0f0f0;
+	text-align: center;
+	line-height: 23px;
+	color: #444;
+	/*position: absolute;*/
+}
+.amount_box a:hover{
+	border-color: #ff873e;
+	text-decoration: none;
+	color: #ff873e;
+	/*z-index: 3;*/
+}
+
+.amount_box .reSty{
+	color: #cbcbcb;
+}
+/*.amount_box .reSty:hover{*/
+/*	border-right: none;*/
+/*	border-color: #e5e5e5;*/
+/*	text-decoration: none;*/
+/*	color: #cbcbcb;*/
+/*}*/
+
+.amount_box .plus{
+	border-left-color: transparent;
+}
+.b-s-info a {
+	text-decoration: none;
+	color: #000;
+}
+.b-s-info a:hover {
+	color: #e33333;
+}
+.searchinput{
+	border: 2px solid rgb(255,68,0);
+	height: 30px;
+	margin-right: -5px;
+}
+.searchbtn{
+	text-align: center;
+	width: 60px;
+	height: 30px;
+	background-color: rgb(255,68,0);
+	color: white;
+}
+
+.tb-logo{
+	height: 55px;
+	line-height: 55px;
+}
+.tb-logo .container div span{
+	color: rgb(255,68,1);
+}
+.my-tb-logo{
+	margin-top: 8px;
+	width: auto;
+	height: auto;
+	max-width: 80%;
+	max-height: 80%;
+}
+.plus,
+.reSty {
+	position: absolute;
+	width: 15px;
+	height: 25px;
+	background-color: #f1f1f1;
+	text-align: center;
+	line-height: 25px;
+	border: 1px solid #ccc;
+}
+.sum{
+	left: 0;
+}
+.plus {
+	border-bottom: 1px solid #ccc;
+}
+.reSty {
+	left: 4px;
+	border-bottom: 1px solid #ccc;
+}
+.amount_box {
+	width: 80px;
+	float: left;
+	position: relative;
+	text-align: center;
+}

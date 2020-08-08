@@ -1,0 +1,56 @@
+a:active,a:visited,a:focus,a:hover{
+    text-decoration: none;
+}
+.b-s-info{
+    line-height: 28px;
+    height: 30px;
+}
+html {
+    overflow-x: hidden; overflow-y: auto;
+}
+.b-s-info a{
+    color: #000;
+}
+.b-s-info a:hover{
+    color: rgb(227,51,51);
+}
+.my-tb{
+    height: 60px;
+    line-height: 60px;
+}
+.my-tb .container div span{
+    color: white;
+}
+.searchinput{
+    height: 30px;
+    margin-right: -5px;
+}
+.searchbtn{
+    text-align: center;
+    width: 60px;
+    height: 30px;
+}
+.my-tb-logo{
+    font-size: 30px;
+    font-family: "Adobe 黑体 Std R";
+}
+
+ul,li{
+    padding:0;margin:0;list-style:none
+}
+.my-tb a,.my-tb a:hover{
+    color: white;
+}
+a{
+    color: black;
+}
+a:hover{
+    color: rgb(227,51,51);
+}
+* {
+    margin: 0px;
+    padding: 0px;
+}
+ul li{
+    padding: 5px;
+}

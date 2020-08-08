@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/address_info.css">
+    <title>收货地址-淘宝网</title>
+</head>
+<body>
+<div class="b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            <input th:value="${B_S_INFO.getB_s_id()}" type="hidden" class="b_s_id">
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+<div class="row my-tb" style="background-color: rgb(255,68,1);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/get_personal_info">我的淘宝</a></span>
+        </div>
+        <div class="col-md-1">
+            <span>首页</span>
+        </div>
+        <div class="col-md-1">
+            <span>账户设置</span>
+        </div>
+    </div>
+</div>
+
+<br>
+<!--主体-->
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul>
+                <li style="color: rgb(255,68,1)">账号管理</li>
+                <li><a href="/get_address_list" style="color: rgb(255,68,1)">收货地址管理</a></li>
+                <li><a href="/to_my_info">我的资料</a></li>
+                <li><a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}" target="_blank">我的购物车</a></li>
+                <li><a th:href="to_collect">我的收藏夹</a></li>
+                <li><a href="#" class="goods">已买到的宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="container">
+                <h3>新增收货地址</h3>
+                <form role="form" action="insert_address" method="get">
+                    <div class="form-group" style="width: 50%">
+                        <label for="address"><span style="color: red">*</span>地址信息</label>
+                        <input type="text" class="form-control" id="address" placeholder="请输入地址信息" name="address" th:value="${address_info.address}">
+                    </div>
+                    <div class="form-group" style="width: 50%">
+                        <label for="address_detail"><span style="color: red">*</span>详细地址</label>
+                        <input type="text" class="form-control" id="address_detail" placeholder="请输入详细地址" name="address_detail"
+                               th:value="${address_info.address_detail}">
+                    </div>
+                    <div class="form-group" style="width: 30%">
+                        <label for="postcode">邮政编码</label>
+                        <input type="text" class="form-control" id="postcode" placeholder="请输入邮政编码" name="postcode"
+                               th:value="${address_info.postcode}">
+                    </div>
+                    <div class="form-group" style="width: 50%">
+                        <label for="addresssee"><span style="color: red">*</span>收货人姓名</label>
+                        <input type="text" class="form-control" id="addresssee" placeholder="请输入收货人姓名" name="addresssee"
+                               th:value="${address_info.addresssee}">
+                    </div>
+                    <div class="form-group" style="width: 50%">
+                        <label for="telephone"><span style="color: red">*</span>手机号码</label>
+                        <input type="text" class="form-control" id="telephone" placeholder="请输入手机号码" name="telephone"
+                               th:value="${address_info.telephone}">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="default_status" checked th:if="${address_info.getDefault_status()==1}">
+                            <input type="checkbox" name="default_status" th:if="${address_info.getDefault_status()!=1}">设置为默认收货地址
+                        </label>
+                    </div>
+                    <input type="hidden" name="b_s_id" th:value="${address_info.b_s_id}">
+                    <input type="hidden" name="address_id" th:value="${address_info.address_id}">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </form>
+            </div>
+
+            <!--            <div class="container">-->
+            <div class="address-count"><span class="glyphicon glyphicon-info-sign"></span> 已经保存了 <b><a th:text="${address_list.size()}"></a> </b>
+                条数据，还能保存<b> <a th:text="${10 - address_list.size()}"></a> </b>条数据
+            </div>
+            <table class="table table-striped table-bordered table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>收货人</th>
+                    <th>所在地区</th>
+                    <th>详细地址</th>
+                    <th>邮编</th>
+                    <th>电话/手机</th>
+                    <th>操作</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <div th:each="item, itemStat: ${address_list}">
+                    <tr>
+                        <td th:text="${item.addresssee}"></td>
+                        <td th:text="${item.address}"></td>
+                        <td th:text="${item.address_detail}"></td>
+                        <td th:text="${item.postcode}"></td>
+                        <td th:text="${item.telephone}"></td>
+                        <td><a th:href="@{show_edit_address(address_id=${item.address_id})}"><span class="glyphicon glyphicon-edit"></span>
+                        </a>|<a th:href="@{delete_address
+                (address_id=${item.address_id},b_s_id=${item.b_s_id}, default_status=${item.default_status})}"
+                                onClick="return confirm('您确认要删除该地址吗？');"><span class="glyphicon glyphicon-remove"></span></a>
+                        </td>
+                        <td th:if="${itemStat.first}"><button type="button" class="btn btn-success" th:href="@{set_default_status(address_id=${item.address_id}, b_s_id=${item.b_s_id})}">
+                            默认地址</button></td>
+                        <td th:if="${!itemStat.first}"><a th:href="@{set_default_status(address_id=${item.address_id}, b_s_id=${item.b_s_id})}" class="btn_address" onclick="showtip()">
+                            设为默认</a></td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+            <!--            </div>-->
+        </div>
+    </div>
+</div>
+
+<!--<p class="prompt" style="display:none;">设置成功！</p>-->
+<script type="text/javascript">
+        $(document).ready(function () {
+            $(".goods").click(function () {
+                var b_s_id = $(".b_s_id").val()
+                location.href = "get_order_list_by_b_s_id?b_s_id=" + b_s_id + "&start=";
+            });
+
+            function showtip() {
+                alert("设置成功！")
+
+            }
+        })
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布宝贝</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/index_seller.css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            code = ""
+            $.ajax({
+                type : "get",
+                url : "http://127.0.0.1:8080/get_field_list",
+                data : {"dictionary_code" : code},
+                success : function (data) {
+                    $("#one").empty();
+                    for (i in data){
+                        var options = "<option value=" + data[i].dictionary_code + ">"
+                                +  data[i].field_name + "</option>"
+                        $("#one").append(options);
+                    }
+                    $("#one").change()
+                }
+            })
+            //init two
+            $("#one").change(function () {
+                code = $("#one").val()
+                $.ajax({
+                    type : "get",
+                    url : "http://127.0.0.1:8080/get_field_list",
+                    data : {"dictionary_code" : code},
+                    success : function (data) {
+                        $("#two").empty();
+                        for (i in data){
+                            //alert(data[i].dictionary_code + "|" +　data[i].class_name)
+                            var options = "<option value=" + data[i].dictionary_code + ">"
+                                +  data[i].field_name + "</option>"
+                            $("#two").append(options);
+                        }
+                        $("#two").change()
+                    }
+                })
+            })
+            //init three
+            $("#two").change(function () {
+                code = $("#two").val()
+                $.ajax({
+                    type : "get",
+                    url : "http://127.0.0.1:8080/get_field_list",
+                    data : {"dictionary_code" : code},
+                    success : function (data) {
+                        $("#three").empty();
+                        for (i in data){
+                            //alert(data[i].dictionary_code + "|" +　data[i].class_name)
+                            var options = "<option value=" + data[i].dictionary_code + ">"
+                                +  data[i].field_name + "</option>"
+                            $("#three").append(options);
+                        }
+                    }
+                })
+            })
+
+            var b_s_id=$(".b_s_id").val();
+            // $("#store_id")
+            $.ajax({
+                type : "get",
+                url : "http://127.0.0.1:8080/get_seller_store_info",
+                data : {"b_s_id" : b_s_id},
+                success : function (data) {
+                    for (i in data){
+                        var options = "<option value=" + data[i].store_id + ">"
+                            +  data[i].store_name + "</option>"
+                        $("#store_name").append(options);
+                    }
+                }
+            })
+
+        })
+
+
+    </script>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container" style="font-size: 12px">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            <input type="hidden" class="b_s_id" th:value="${B_S_INFO.getB_s_id()}">
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<!--卖家工作台-->
+<div class="row my-tb" style="background-color: rgb(46,135,242);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/index_seller" style="font-size: 20px;color: white">卖家工作台</a></span>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul style="margin: 0px;padding: 0px">
+                <li><a href="/index_seller" >管理我的店铺</a></li>
+                <li><a href="/select_field" style="color: rgb(46,135,242)">发布宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div class="col-md-12 store_info_list">
+                <div>
+                    <form action="/show_input_goods">
+                        <div>
+                            <h3 style="padding: 5px;border-bottom: 1px solid #999999">①选择商品分类</h3>
+                        </div>
+                        <div class="select-div">
+                            <span>一级分类：</span>
+                            <select id="one" name="one" class="form-control" style="width: 50%"></select>
+                        </div>
+                        <div class="select-div">
+                            <span>二级分类：</span>
+                            <select id = "two" name="two" class="form-control" style="width: 50%"></select>
+                        </div>
+                        <div class="select-div">
+                            <span>三级分类：</span>
+                            <select id = "three" name="three" class="form-control"style="width: 50%"></select>
+                        </div>
+                        <div class="select-div">
+                            <span>选择店铺：</span>
+                            <select id="store_name" name="store_id" class="form-control" style="width: 50%"></select>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="background-color: rgb(46,135,242)!important;">下一步</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

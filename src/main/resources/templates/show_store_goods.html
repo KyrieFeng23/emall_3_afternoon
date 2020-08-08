@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/store_goods.css}">
+    <title>店铺</title>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+<div class="row tb-logo" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <a href="/index"><img src="images/tb-logo.png" class="my-tb-logo"></a>
+        </div>
+        <div class="col-md-2" style="font-size: 8px;padding: 0px">
+            <b><a href="#"><span class="store_name" th:text="${store_info.getStore_name()}"></span></a></b>
+        </div>
+        <div class="col-md-2 marks" style="font-size: 8px">
+            <div>
+                <span class="mark-title">描 述</span>
+                <br>
+                <span th:text="${store_info.getDescribe_mark()}"></span>
+            </div>
+            <div>
+                <span class="mark-title"> 服 务</span>
+                <br>
+                <span th:text="${store_info.getService_mark()}"></span>
+            </div>
+            <div>
+                <span class="mark-title"> 物 流</span>
+                <br>
+                <span th:text="${store_info.getLogistics_mark()}"></span>
+            </div>
+        </div>
+        <div class="col-md-6" align="right">
+            <div class="search" style="margin: 0;padding: 0">
+                <input class="search-content" th:value="${query_value}">
+                <button class="search-but">搜淘宝</button>
+                <button class="store">搜本店</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div><input type="hidden" id="store_id" th:value="${store_id}"></div>
+    <div class="col-md-12 title" style="height: 30px;line-height: 30px;background-color: rgb(255,68,0);text-align: center;color: white">
+        <a href="#" class="store_name"><div class="col-md-1 col-md-offset-5">
+            全部商品
+        </div> </a>
+        <a href="#" class="store_name"><div class="col-md-1">
+            首页
+        </div>
+        </a>
+    </div>
+    <div class="col-md-12" style="padding: 0px;background-color: rgb(245,248,250);height: 100%">
+        <div class="col-md-10" style="padding: 0px" th:if="${count!=0}">
+        <div class="col-md-2 left-4" th:each="goodslist,goodsliststate:${goods_info}" style="background-color: white;border-radius: 5px">
+            <a class="detail" href="#">
+                <img th:src="${goodslist.getGoods_photo_path_infoList().get(0).getPath_name()}" class="img-rounded" width="100%">
+                <br>
+                <div class="goods_money" th:text="${'￥'+goodslist.getGoods_actual_price()}" style="color:rgb(255,68,0)">
+                </div>
+                <b><div th:text="${goodslist.getGoods_name()}" class="goods_name"></div></b>
+                <div class="goods_describe" th:text="${goodslist.getGoods_describe()}"></div>
+            </a>
+            <input th:value="${goodslist.getGoods_id()}" type="hidden" class="goods_id">
+        </div>
+        </div>
+        <div class="col-md-10" style="padding: 0px;text-align: center" th:if="${count==0}">
+            <span style="line-height: 30px;height: 30px">
+                <h3>没有搜索到该商品哦，换一个关键词再试试吧~</h3>
+            </span>
+        </div>
+<!--        右侧店铺信息-->
+        <div class="col-md-2 store_info" style="padding: 10px;border: 1px solid rgb(255,68,0);background-color: white">
+            <b><div class="store_name1" th:text="${store_info.getStore_name()}" style="text-align: center"></div></b>
+            <div style="text-align: center">
+                “ <span th:text="${store_info.getStore_describe()}" class="describe"></span> ”
+            </div>
+            <div>
+                <span style="text-align: left" class="mark-title1">店铺动态评分</span>
+            </div>
+            <div style="font-size: 8px" class="marks1">
+                <div>
+                    <span class="mark-title1">描述相符：</span>
+                    <span th:text="${store_info.getDescribe_mark()}" class="mark1-info"></span>
+                </div>
+                <br>
+                <div>
+                    <span class="mark-title1">服务态度：</span>
+                    <span th:text="${store_info.getService_mark()}" class="mark1-info"></span>
+                </div>
+                <br>
+                <div>
+                    <span class="mark-title1">物流服务：</span>
+                    <span th:text="${store_info.getLogistics_mark()}" class="mark1-info"></span>
+                </div>
+            </div>
+            <div class="credit-div mark-title1">
+                信誉：<input th:value="${store_info.getCredit()}" class="credit" type="hidden">
+            </div>
+        </div>
+
+<!--        分页部分-->
+        <div class="col-md-12" align="left">
+            <span>当前第 <span th:text="${start}"></span> 页，共 <span th:text="${totalPage}"></span> 页</span>
+            <span>搜索到 <span th:text="${count}"></span> 件商品，每页显示: <span th:text="${page_size}"></span> 件</span>
+            <input type="hidden" th:value="${start}" class="start">
+            <input type="hidden" th:value="${page_size}" class="page_size">
+            <input type="hidden" th:value="${totalPage}" class="totalPage">
+            <span th:if="${start!=1}">
+                  <a href="#"><button type="button" class="btn btn-default first-page">首页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default pre-page">上一页</button></a>
+            </span>
+            <span th:if="${start==1}">
+                  <button type="button" class="btn btn-default first-page" disabled="disabled">首页</button>
+                  <button type="button" class="btn btn-default pre-page" disabled="disabled">上一页</button>
+            </span>
+            <span th:if="${start!=totalPage}">
+                  <a href="#"><button type="button" class="btn btn-default next-page">下一页</button></a>
+                  <a href="#"><button type="button" class="btn btn-default last-page">尾页</button></a>
+            </span>
+            <span th:if="${start==totalPage}">
+                  <button type="button" class="btn btn-default next-page" disabled="disabled">下一页</button>
+                  <button type="button" class="btn btn-default last-page" disabled="disabled">尾页</button>
+            </span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function (){
+        var goods_id = [];
+        var detail = [];
+        $(".goods_id").each(function(){
+            goods_id.push($(this).val());
+        });
+
+        $(".detail").each(function(){
+            detail.push($(this));
+        });
+        for (var i=0;i<detail.length;i++) {
+            detail[i].attr("href","show_a_goods_info_detail?goods_id=" + goods_id[i])
+        }
+
+        $(".store_name").click(function (){
+            var store_id = $("#store_id").val()
+            location.href = "show_store_goods?store_id=" + store_id+"&start="
+        });
+
+        var store_id=$("#store_id").val();
+        var query=$(".search-content").val();
+        var start=$(".start").val();
+        var totalPage=$(".totalPage").val();
+        $(".store").click(function () {
+            var query=$(".search-content").val();
+            if (query==""){
+                alert("请输入关键字后再进行搜索哦~")
+            }else {
+                location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                    +query+"&start="+start+"&page_size=10";
+            }
+
+        })
+
+        $(".first-page").click(function () {
+            location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                +query+"&start=1"+"&page_size=10";
+        })
+
+        $(".next-page").click(function () {
+            start++;
+            location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                +query+"&start="+start+"&page_size=10";
+
+        })
+
+        $(".pre-page").click(function () {
+            start--;
+            location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                +query+"&start="+start+"&page_size=10";
+        })
+
+        $(".last-page").click(function () {
+            start=totalPage;
+            location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                +query+"&start="+start+"&page_size=10";
+        })
+
+        //显示信誉星数
+        var num=$(".credit").val();
+        var html="<span class=\"glyphicon glyphicon-star\"></span>";
+        for (var i=0;i<num;i++){
+            $(".credit-div").append(html);
+        }
+
+        $(".search-but").click(function () {
+            var query=$(".search-content").val();
+            if (query==""){
+                alert("请输入关键字后再进行搜索哦~")
+            }else {
+                location.href="get_goods_info_list_by_taobao_search?query_value="
+                    +query+"&start=";
+            }
+        })
+
+    })
+</script>
+</body>
+</html>

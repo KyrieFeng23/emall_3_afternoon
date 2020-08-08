@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" href="css/personal_info.css">
+    <link rel="stylesheet" href="http://g.tbcdn.cn/??tb/global/2.2.18/global-min.css,tb/tb-fp/1.4.20/style-min.css?t=20131113">
+    <title>我的淘宝</title>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $(".goods").click(function (){
+                var b_s_id = $(".b_s_id").val()
+                location.href = "get_order_list_by_b_s_id?b_s_id=" + b_s_id+"&start=&query_value=";
+            });
+        })
+    </script>
+</head>
+<body>
+<!--顶栏-->
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            <input th:value="${B_S_INFO.getB_s_id()}" type="hidden" class="b_s_id">
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}" target="_blank">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<div class="row my-tb" style="background-color: rgb(255,68,1);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/get_personal_info">我的淘宝</a></span>
+        </div>
+        <div class="col-md-1">
+            <span>首页</span>
+        </div>
+        <div class="col-md-1">
+            <span>账户设置</span>
+        </div>
+        <div class="col-md-4 col-md-offset-4" align="right">
+            <div class="search" style="margin: 0px;padding: 0px">
+            <input width="100px" class="searchinput">
+            <button class="searchbtn">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!--主体-->
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul>
+                <li style="color: rgb(255,68,1)"><b>全部功能</b></li>
+                <li><a href="/get_address_list">收货地址管理</a></li>
+                <li><a href="/to_my_info">我的资料</a></li>
+                <li><a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">我的购物车</a></li>
+                <li><a th:href="to_collect">我的收藏夹</a></li>
+                <li><a href="#" class="goods">已买到的宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-7">
+            <div class="main-1 row" style="border: 1px solid rgb(228,234,238)">
+                <div class="row" style="background-color: rgb(245,248,250);margin-left: 0px;margin-right: 0px;line-height: 50px;height: 50px">
+                    <div class="col-md-1">
+                        <img th:src="${B_S_INFO.getIcon()}" width="40px" class="img-circle">
+                    </div>
+                    <div class="col-md-2">
+                        <span th:text="${B_S_INFO.getNickname()}"></span>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                        <a href="/get_address_list" style="color: #999999;font-size: 10px">我的收货地址</a>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <a href="/get_address_list" style="color: #999999;font-size: 10px">我的优惠信息</a>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <a href="/get_address_list" style="color: #999999;font-size: 10px">我的支付宝</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" style="text-align: center;line-height: 40px;height: 40px;margin: 0px;padding: 0px">
+                    <div>
+                    <div class="col-md-3" style="border-right: 1px solid rgb(228,234,238)">
+                        <a>待付款</a>
+                    </div>
+                    <div class="col-md-3" style="border-right: 1px solid rgb(228,234,238)">
+                        <a>待发货</a>
+                    </div>
+                    <div class="col-md-3" style="border-right: 1px solid rgb(228,234,238)">
+                        <a>待收货</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a>待评价</a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="main-2">
+                <div class="row" style="background-color: rgb(245,248,250);border: 1px solid rgb(228,234,238);line-height:40px;height: 40px">
+                    <div class="col-md-12">
+                        <img src="images/wuliu.png">
+                        <span>我的物流</span>
+                    </div>
+                </div>
+                <div class="row" style="border: 1px solid rgb(228,234,238);line-height:40px;height: 40px">
+                    <div class="col-md-12">
+                        <span>暂无物流信息</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div style="text-align: center">
+                <div style="height: 40px;background-color: rgb(110,200,132);line-height: 40px">
+                    <span style="color: white;font-size: 15px">我的日历</span>
+                </div>
+                <div style="background-color: rgb(248,255,250);border: 1px solid rgb(207,229,212);padding-bottom: 8px">
+                    <span style="color: rgb(110,200,132);font-size: 60px;padding: 5px 0px 5px 0px" class="day"></span><br>
+                    <span style="color: rgb(110,200,132);font-size: 15px" class="week"></span><br>
+                    <span style="color: rgb(110,200,132);font-size: 15px" class="month"></span><br>
+                    <span> </span>
+                </div>
+            </div>
+<!--            便民服务-->
+            <div style="margin-top: 20px">
+                <div id="J_Wrap" class="wrap">
+                    <div class="screen-bd row-full">
+                        <div id="J_BdMain" class="cont">
+                            <div id="J_BdMain1" class="main">
+                                <div id="J_HdMainR" class="main-r">
+                                    <div class="main-r-bd">
+                                        <div class="conve" id="J_conve" data-spm="754893129" style="height: 350px;width: 255px">
+                                            <div class="conve-hd">
+                                                <h3 style="text-align: center;margin-left: 80px">便民服务</h3>
+                                                <span class="conve-hd-s iconfont">&#355</span>
+
+                                            </div>
+                                            <div class="conve-bd">
+                                                <div class="conve-bd-wrap" style="margin-left: 30px!important;">
+                                                    <div class="conve-bd-inner" id="J_conveBd">
+                                                        <a href="http://wt.taobao.com/?ks-menu=cz" class="mod J_mod" data-name="phone">
+                                                            <i class="iconfont">&#61505</i>
+                                                            <p>话费</p>
+                                                            <span class="mod-arrow">
+							   <em></em>
+							   <span></span>
+							 </span>
+                                                        </a>
+                                                        <a href="http://game.taobao.com" class="mod J_mod" data-name="game">
+                                                            <i class="iconfont">&#61506</i>
+                                                            <p>游戏</p>
+                                                            <span class="mod-arrow">
+							   <em></em>
+							   <span></span>
+							 </span>
+                                                        </a>
+                                                        <a href="http://trip.taobao.com" class="mod J_mod" data-name="trip">
+                                                            <i class="iconfont">&#61507</i>
+                                                            <p>旅行</p>
+                                                            <span class="mod-arrow">
+							   <em></em>
+							   <span></span>
+							 </span>
+                                                        </a>
+
+                                                        <a href=" http://baoxian.taobao.com/" class="mod J_mod" data-name="baoxian">
+                                                            <i class="iconfont">&#61508</i>
+                                                            <p>保险</p>
+                                                            <span class="mod-arrow">
+							   <em></em>
+							   <span></span>
+							 </span>
+                                                        </a>
+
+                                                        <a href="http://caipiao.taobao.com/?t=1&ad_id=&am_id=13010663204b41fb5276&cm_id=&pm_id=" class="mod J_mod">
+                                                            <i class="iconfont">&#61509</i>
+                                                            <p>彩票</p>
+                                                        </a>
+
+                                                        <a href="http://dianying.taobao.com" class="mod J_mod">
+                                                            <i class="iconfont">&#61581</i>
+                                                            <p>电影票</p>
+                                                        </a>
+
+                                                        <a href="http://waimai.taobao.com/shop_list.htm" class="mod J_mod">
+                                                            <i class="iconfont">&#61511</i>
+                                                            点外卖
+                                                        </a>
+
+                                                        <a href="http://licai.taobao.com" class="mod J_mod">
+                                                            <i class="iconfont">&#61515</i>
+                                                            理财
+                                                        </a>
+
+                                                        <a href=" http://ebook.taobao.com/" class="mod J_mod">
+                                                            <i class="iconfont">&#61513</i>
+                                                            电子书
+                                                        </a>
+
+                                                        <a href="http://music.taobao.com/" class="mod J_mod">
+                                                            <i class="iconfont">&#61514</i>
+                                                            音乐
+                                                        </a>
+
+                                                        <a href="http://life.taobao.com/market/sdmjf2011.php" class="mod J_mod">
+                                                            <i class="iconfont">&#61512</i>
+                                                            水电煤
+                                                        </a>
+
+                                                        <a href="javascript:;" class="mod mod-default J_mod" target="_self" title="敬待更多便民服务">
+                                                            <i class="iconfont">&#358</i>
+                                                            请期待
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            便民服务end-->
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function() {
+        var myDate = new Date;
+        var year = myDate.getFullYear(); //获取当前年
+        var mon = myDate.getMonth() + 1; //获取当前月
+        var date = myDate.getDate(); //获取当前日
+        date=date.toString().replace(/^[0-9]{1}$/, "0" + date)
+        mon=mon.toString().replace(/^[0-9]{1}$/, "0" + mon)
+        // var h = myDate.getHours();//获取当前小时数(0-23)
+        // var m = myDate.getMinutes();//获取当前分钟数(0-59)
+        // var s = myDate.getSeconds();//获取当前秒
+        var week = myDate.getDay();
+        var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        console.log(year, mon, date, weeks[week])
+        $(".month").text(year + "." + mon);
+        $(".day").text(date);
+        $(".week").text(weeks[week]);
+    })
+</script>
+</body>
+</html>

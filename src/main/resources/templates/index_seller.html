@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>卖家中心</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/index_seller.css">
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container" style="font-size: 12px">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<!--卖家工作台-->
+<div class="row my-tb" style="background-color: rgb(46,135,242);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/index_seller" style="font-size: 20px;color: white">卖家工作台</a></span>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul style="margin: 0px;padding: 0px">
+                <li><a href="/index_seller" style="color: rgb(46,135,242)">管理我的店铺</a></li>
+                <li><a href="/select_field">发布宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div class="col-md-12 store_info_list">
+                <div th:each="store_infolist,store_infostate:${Store_Info_List}" style="margin-bottom: 20px;border: 1px solid rgb(228,234,238)">
+                    <div class="row" style="background-color: rgb(245,248,250);margin-left: 0px;margin-right: 0px;line-height: 50px;height: 50px">
+                        <b><a href="#" class="store_name"><div class="col-md-4" th:text="${store_infolist.getStore_name()}" style="font-size: 20px"></div></a></b>
+                        <input type="hidden" class="store_id" th:value="${store_infolist.getStore_id()}">
+                        <div class="col-md-8 store_describe" th:text="${'「'+store_infolist.getStore_describe()+'」'}"></div>
+                    </div>
+                    <div class="row store_detail" style="padding: 0px;margin: 0px">
+                        <div class="col-md-5" th:text="'描述：'+${store_infolist.getDescribe_mark()}+' 服务：'+${store_infolist.getService_mark()}+' 物流：'+${store_infolist.getLogistics_mark()}">
+                        </div>
+                        <div class="col-md-3 credit_div" >
+                            <input th:value="${store_infolist.getCredit()}" class="credit" type="hidden">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var credit = [];
+        var credit_div = [];
+        var store_name=[];
+        var store_id=[];
+        $(".credit").each(function () {
+            credit.push($(this).val());
+        });
+
+        $(".credit_div").each(function () {
+            credit_div.push($(this));
+        });
+        $(".store_id").each(function () {
+            store_id.push($(this).val());
+        });
+        $(".store_name").each(function () {
+            store_name.push($(this));
+        });
+        for (var i = 0; i < store_id.length; i++) {
+            store_name[i].attr("href","show_goods_list?store_id=" + store_id[i])
+                // location.href = "show_goods_list?store_id=" + store_id[i]
+        }
+        for (var i = 0; i < credit.length; i++) {
+            //显示信誉星数
+            var num = credit[i];
+            var html = "<span class=\"glyphicon glyphicon-star\"></span>";
+            for (var j = 0; j < num; j++) {
+                credit_div[i].append(html);
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

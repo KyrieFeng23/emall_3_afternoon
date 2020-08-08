@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/store_goods.css}">
+    <title>店铺</title>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+<div class="row tb-logo" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <a href="/index"><img src="images/tb-logo.png" class="my-tb-logo"></a>
+        </div>
+        <div class="col-md-1" style="font-size: 8px;padding: 0px">
+            <b><span class="store_name">收藏夹</span></b>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12 title" style="height: 30px;line-height: 30px;background-color: rgb(255,68,0);text-align: center;color: white">
+        <a href="#" class="store_name"><div class="col-md-1 col-md-offset-5">
+            全部收藏
+        </div> </a>
+    </div>
+    <div class="col-md-12" style="padding: 0px;background-color: rgb(245,248,250);height: 100%">
+        <div class="col-md-12" style="padding: 0px" th:if="${count!=0}">
+            <div class="col-md-2 left-4" th:each="goodslist,goodsliststate:${goods_infoList}" style="background-color: white;border-radius: 5px">
+                <a class="detail" href="#">
+                    <img th:src="${goodslist.getGoods_photo_path_infoList().get(0).getPath_name()}" class="img-rounded" width="100%">
+                    <br>
+                    <div class="goods_money" th:text="${'￥'+goodslist.getGoods_actual_price()}" style="color:rgb(255,68,0)">
+                    </div>
+                    <b><div th:text="${goodslist.getGoods_name()}" class="goods_name"></div></b>
+                    <div class="goods_describe" th:text="${goodslist.getGoods_describe()}"></div>
+                </a>
+                <input th:value="${goodslist.getGoods_id()}" type="hidden" class="goods_id">
+            </div>
+        </div>
+        <div class="col-md-10" style="padding: 0px;text-align: center" th:if="${count==0}">
+            <span style="line-height: 30px;height: 30px">
+                <h3>还没有收藏哦，快去挑选商品吧~</h3>
+            </span>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function (){
+        var goods_id = [];
+        var detail = [];
+        $(".goods_id").each(function(){
+            goods_id.push($(this).val());
+        });
+
+        $(".detail").each(function(){
+            detail.push($(this));
+        });
+        for (var i=0;i<detail.length;i++) {
+            detail[i].attr("href","show_a_goods_info_detail?goods_id=" + goods_id[i])
+        }
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布宝贝</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/index_seller.css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pre-step").click(function () {
+                location.href="select_field";
+            })
+
+            var dictionary_code = $("#dictionary_code").val()
+            //alert(dictionary_code)
+            $.ajax({
+                type : "get",
+                url : "http://127.0.0.1:8080/get_field_value",
+                data : {"dictionary_code" : dictionary_code},
+                success : function (data) {
+                    //alert(data)
+                    var split_values = data.split("\|")
+                    //alert(split_values.length)//把数组长度送入一个隐藏框
+                    $("#field_value_length").val(split_values.length)
+                    for (i in split_values){
+                        var label = "<label>" + split_values[i] + "：" + "</label>"
+                        var html = "<input type='text' id=field" + i + " name=field" + i + ">"
+                        var hidden_html = "<input type='hidden' name=hidden_field" + i + " value=" + split_values[i] + "><br>"
+                        var row_html = label + html + hidden_html
+                        if ((i + 1) % 2 == 0)
+                            row_html = "<p>" + row_html + "</p>"
+                        $("#auto_input_arr").append(row_html);
+                    }
+                }
+            });
+            //用class的css可能更好
+            $(".btn_upload").click(function () {
+
+            });
+
+            //正确的写法应该是这样
+            /*$(".btn_upload").click(function (){
+
+            })*/
+            $("#btn_upload_one, #btn_upload_two, #btn_upload_three, #btn_upload_four, #btn_upload_five").
+            click(function () {
+                var btn_who = $(this).attr("id")
+                //alert(btn_who)
+                var arr = btn_who.split("\_")
+                //alert(arr[2])
+                var image_who = "#image_" + arr[2]
+                var upload_who = "upload_" + arr[2]
+                var url_who = "#url_" +  arr[2] + " img"
+                //alert(upload_who)
+                var form = new FormData();
+                form.append("file", document.getElementById(upload_who).files[0]);
+                $.ajax({
+                    url: "http://127.0.0.1:8080/image_upload",
+                    data: form,
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        //alert(data)
+                        var pic= data;
+                        $(url_who).attr("src",pic);
+                        $(image_who).val(data)
+                    }
+                })
+            })
+
+        })
+    </script>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container" style="font-size: 12px">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+            <input type="hidden" class="b_s_id" th:value="${B_S_INFO.getB_s_id()}">
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<!--卖家工作台-->
+<div class="row my-tb" style="background-color: rgb(46,135,242);margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <span class="my-tb-logo"><a href="/index_seller" style="font-size: 20px;color: white">卖家工作台</a></span>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row main" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <ul style="margin: 0px;padding: 0px">
+                <li><a href="/index_seller" >管理我的店铺</a></li>
+                <li><a href="/select_field" style="color: rgb(46,135,242)">发布宝贝</a></li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div class="col-md-12 store_info_list">
+                <div>
+                    <a href="/select_field"><button class="pre-step btn btn-primary">上一步</button></a>
+                    <form action="insert_goods_info" method="post">
+                        <h3 style="padding: 5px;border-bottom: 1px solid #999999">②添加属性</h3>
+                        <div id="goods_base_info" class="form-group col-md-6">
+                            <p>商品名称：<input type="text" name="goods_name" id="goods_name"></p>
+                            <p>商品描述：<input type="text" name="goods_describe" id="goods_describe"></p>
+                            <p>商品价格：<input type="text" name="goods_price" id="goods_price"></p>
+                            <p>库存数量：<input type="text" name="goods_stock" id="goods_stock"></p>
+                            <input type="hidden" name="store_id" th:value="${store_id}">
+                            <input type="hidden" id="dictionary_code" name="dictionary_code" th:value="${dictionary_code}">
+                            <input type="hidden" id="field_value_length" name="field_value_length">
+                            <input type="hidden" name="image_one" id="image_one">
+                            <input type="hidden" name="image_two" id="image_two">
+                            <input type="hidden" name="image_three" id="image_three">
+                            <input type="hidden" name="image_four" id="image_four">
+                            <input type="hidden" name="image_five" id="image_five">
+                        </div>
+                        <div id="auto_input_arr"> <!--动态生成的input-->
+                        </div>
+                        <br>
+                        <div class="form-group" style="padding: 15px;width: 100px"><button id="btn" class="btn btn-success" style="width: 100px">发布</button></div>
+                    </form>
+
+                    <div id="image_uploads">
+                        <br>
+                        <h3 style="padding: 5px;border-bottom: 1px solid #999999">③上传图片</h3>
+                        <div class="image_upload form-group col-md-6">
+                            <div id="image_upload_one" width="100" height="100"></div>
+                            <div><input type="file" id="upload_one"></div>
+                            <p id="url_one"><img src="" width=200></p>
+                            <div><button id="btn_upload_one" class="btn btn-primary btn_upload">上传</button></div>
+                        </div>
+                        <div class="image_upload form-group col-md-6">
+                            <div id="image_upload_two" width="100" height="100"></div>
+                            <div><input type="file" id="upload_two"></div>
+                            <p id="url_two"><img src="" width=200></p>
+                            <div><button id="btn_upload_two" class="btn btn-primary btn_upload">上传</button></div>
+                        </div>
+                        <div class="image_upload form-group col-md-6">
+                            <div id="image_upload_one_three" width="100" height="100"></div>
+                            <div><input type="file" id="upload_three"></div>
+                            <p id="url_three"><img src="" width=200></p>
+                            <div><button id="btn_upload_three" class="btn btn-primary btn_upload">上传</button></div>
+                        </div>
+                        <div class="image_upload form-group col-md-6">
+                            <div id="image_upload_four" width="100" height="100"></div>
+                            <div><input type="file" id="upload_four"></div>
+                            <p id="url_four"><img src="" width=200></p>
+                            <div><button id="btn_upload_four" class="btn btn-primary btn_upload">上传</button></div>
+                        </div>
+                        <div class="image_upload form-group col-md-6">
+                            <div id="image_upload_five" width="100" height="100"></div>
+                            <div><input type="file" id="upload_five"></div>
+                            <p id="url_five"><img src="" width=200></p>
+                            <div><button id="btn_upload_five" class="btn btn-primary btn_upload">上传</button></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+</body>
+</html>

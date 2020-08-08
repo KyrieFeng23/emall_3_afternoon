@@ -1,0 +1,43 @@
+a:active,a:visited,a:focus,a:hover{
+    text-decoration: none;
+}
+.b-s-info{
+    line-height: 30px;
+    height: 30px;
+}
+html {
+    overflow-x: hidden; overflow-y: auto;
+}
+.b-s-info a{
+    color: #000;
+}
+.b-s-info a:hover{
+    color: rgb(46,135,242);
+}
+a{
+    color: black;
+}
+a:hover{
+    color: rgb(46,135,242);
+}
+.my-tb{
+    height: 60px;
+    line-height: 60px;
+}
+.my-tb .container div span{
+    color: white;
+}
+ul,li{
+    padding: 5px;
+    margin:0;
+    list-style:none;
+    color: black;
+}
+ul li a:hover{
+    color: rgb(46,135,242);
+}
+td{
+    padding: 20px 5px 20px 5px!important;
+    text-align: center;
+    vertical-align:text-top;
+}

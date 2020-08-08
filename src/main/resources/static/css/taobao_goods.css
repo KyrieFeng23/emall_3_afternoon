@@ -1,0 +1,113 @@
+html { overflow-x: hidden; overflow-y: auto; }
+a:active,a:visited,a:focus{
+    text-decoration: none;
+}
+.b-s-info{
+    line-height: 28px;
+    height: 30px;
+}
+.search input{
+    padding-left: 3px;
+    border: 2px solid rgb(255,68,0);
+    width: 500px;
+    height: 30px;
+}
+.search button{
+    background-color: rgb(255,68,0);
+    color: white;
+    text-align: center;
+    width: 60px;
+    height: 30px;
+}
+.search .store{
+    background-color: rgb(255,217,179);
+    color: rgb(255,68,0);
+    text-align: center;
+    width: 60px;
+    height: 30px;
+}
+.tb-logo{
+    height: 50px;
+    /*padding-top: 10px!important;*/
+    line-height: 50px;
+}
+.tb-logo .container div span{
+    color: rgb(255,68,1);
+}
+.my-tb-logo{
+    width: auto;
+    height: auto;
+    max-width: 50%;
+    max-height: 50%;
+}
+.marks div,.marks1 div{
+    margin-top: 10px;
+    line-height: normal;
+    display: inline-block;
+    color: black;
+    text-align: center;
+}
+.mark-title{
+    color: #999999!important;
+}
+.mark-title1{
+    font-size: 12px;
+}
+.store_name{
+    color: black!important;
+    font-size: 13px;
+}
+.store_name1{
+    font-size: 20px;
+}
+.left-4{
+    margin: 19px;
+    padding: 0px;
+    margin-top: 10px;
+}
+.left,.right{
+    border-radius: 5px 5px 5px 5px;
+    background-color: white;
+    padding: 5px;
+    margin-left: 10px;
+}
+.goods_name,.goods_describe{
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0px 5px 0px 5px;
+}
+.describe{
+    font-size: 12px;
+    color: #999999;
+}
+.mark1-info{
+    color: red;
+}
+.credit-div{
+    margin-top: 10px;
+}
+.store_info{
+    margin-left: -13px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+.title a,.title a:hover{
+    color: white!important;
+}
+.title div:hover{
+    background-color: rgb(255,68,1);
+    color: white;
+    transition-duration:0.5s;
+    cursor: pointer;
+}
+.title div{
+    cursor: pointer;
+}
+.store_name:hover{
+    color: rgb(255,68,1);
+}

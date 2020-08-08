@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+     <link rel="stylesheet" th:href="@{/bootstrap/js/bootstrap.min.js}"/>
+     <link rel="stylesheet" th:href="@{/js/jquery-1.12.1.min.js}"/> -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/base.js}"></script>
+    <script th:src="@{/js/detail.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#btn_add_cart").click(function (){
+                var goods_id = $("#goods_id").val()
+                var store_id = $("#store_id").val()
+                var goods_sum = $("#goods_sum").val()
+                var goods_actual_price = $("#goods_actual_price").val()
+                var goods_money = goods_sum * goods_actual_price
+                location.href = "add_cart?goods_id=" + goods_id + "&store_id=" + store_id
+                    + "&goods_sum=" + goods_sum + "&goods_money=" + goods_money
+            });
+            $($(".list_item").children("li").get(0)).addClass("current");
+            $("#btn_buy").click(function (){
+                var goods_id = $("#goods_id").val()
+                var store_id = $("#store_id").val()
+                var goods_sum = $("#goods_sum").val()
+                var goods_actual_price = $("#goods_actual_price").val()
+                var goods_money = goods_sum * goods_actual_price
+                var photo_path = $(".photo_path").attr("src");
+                //store_id order_money goods_id goods_sum goods_money goods_property
+                location.href = "show_confirm_order_by_goods?goods_id=" + goods_id + "&store_id=" + store_id
+                    + "&goods_actual_price=" + goods_actual_price
+                    + "&goods_sum=" + goods_sum + "&goods_money=" + goods_money + "&photo_path=" + photo_path
+            });
+            $(".store_name").click(function (){
+                var store_id = $("#store_id").val()
+                location.href = "show_store_goods?store_id=" + store_id+"&start="
+            });
+            $(".store").click(function () {
+
+                var store_id=$("#store_id").val();
+                var query=$(".search-content").val();
+                if (query==""){
+                    alert("请输入关键字后再进行搜索哦~")
+                }else {
+                    location.href="get_goods_info_list_by_store_search?store_id="+store_id+"&query_value="
+                        +query+"&start=";
+                }
+            })
+
+            $(".search-but").click(function () {
+                var query=$(".search-content").val();
+                if (query==""){
+                    alert("请输入关键字后再进行搜索哦~")
+                }else {
+                    location.href="get_goods_info_list_by_taobao_search?query_value="
+                        +query+"&start=";
+                }
+            })
+
+
+            // 动态插入属性
+            //alert(dictionary_code)
+            var field=[];
+            var value=[];
+            var goods_id=$("#goods_id").val()
+            $.ajax({
+                async: false,
+                type : "get",
+                url : "http://127.0.0.1:8080/get_goods_property_list",
+                data : {"goods_id" : goods_id},
+                success : function (data) {
+                    for (i in data){
+                        field.push(data[i].property_name)
+                        value.push(data[i].property_value)
+                        var li="<li><div class=\"col-md-5\" style=\"padding: 10px 0 10px 0\">"
+                            +"<span>"+field[i]+": </span>"
+                            +"<span>"+value[i]+"</span>"
+                            +"</div></li>"
+                        $(".property-ul").append(li);
+                    }
+                }
+
+            });
+            // for (i in field.){
+            //     // var label = "<div class=\"col-md-6\" style='padding: 0'><span>" + split_values[i] + "：" + "</span>"
+            //     // var html = "<input style='margin: 5px' type='text' id=field" + i + " name=field" + i + " value='"+field[i]+"'></div>"
+            //     // var hidden_html = "<input type='hidden' name=hidden_field" + i + " value='"+split_values[i] + "'>"
+            //     // var row_html = label + html + hidden_html
+            //     alert("1")
+            //
+            // }
+        })
+    </script>
+
+
+    <title>商品详情</title>
+</head>
+<body>
+<div class="row b-s-info" style="background-color: rgb(245,245,245)">
+    <div class="container">
+        <div class="col-md-2" style="padding: 0px">
+            欢迎您，<a href="/get_personal_info"><span th:text="${B_S_INFO.getNickname()}"></span></a>
+        </div>
+        <div class="col-md-1 col-md-offset-3" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index_seller">卖家中心</a>
+        </div>
+        <div class="col-md-2" th:if="${B_S_INFO.getStatus()==0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-2 col-md-offset-4" th:if="${B_S_INFO.getStatus()!=0}">
+            <a href="/index">淘宝网首页</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="to_collect">收藏夹</a>
+        </div>
+        <div class="col-md-1">
+            <a th:href="@{show_cart(b_s_id=${B_S_INFO.getB_s_id()})}">购物车</a>
+        </div>
+        <div class="col-md-2" align="right">
+            <a href="/logout">退出登录</a>
+        </div>
+    </div>
+</div>
+<div class="row tb-logo" style="margin: 0px;padding: 0px">
+    <div class="container">
+        <div class="col-md-2" style="margin: 0px;padding: 0px">
+            <a href="/index"><img src="images/tb-logo.png" class="my-tb-logo"></a>
+        </div>
+        <div class="col-md-2" style="font-size: 8px;padding: 0px">
+            <b><a href="#"><span class="store_name" th:text="${store_info.getStore_name()}"></span></a></b>
+        </div>
+        <div class="col-md-2 marks" style="font-size: 8px">
+            <div>
+                <span class="mark-title">描 述</span>
+                <br>
+                <span th:text="${store_info.getDescribe_mark()}"></span>
+            </div>
+            <div>
+                <span class="mark-title"> 服 务</span>
+                <br>
+                <span th:text="${store_info.getService_mark()}"></span>
+            </div>
+            <div>
+                <span class="mark-title"> 物 流</span>
+                <br>
+                <span th:text="${store_info.getLogistics_mark()}"></span>
+            </div>
+        </div>
+        <div class="col-md-6" align="right">
+            <div class="search" style="margin: 0;padding: 0">
+                <input class="search-content">
+                <button class="search-but">搜淘宝</button>
+                <button class="store">搜本店</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+       <br>
+        <div><input type="hidden" id="goods_id" th:value="${goods_info.goods_id}"></div>
+        <div><input type="hidden" id="store_id" th:value="${goods_info.store_id}"></div>
+        <div><input type="hidden" id="goods_actual_price" th:value="${goods_info.goods_actual_price}"></div>
+        <div class="product_intro">
+        <div class="preview_wrap fl">
+            <div class="preview_img" th:each="photo_path,photoState:${Photo_Path_List}">
+                    <img th:src="${photo_path.getPath_name()}" width="100%" alt="" th:if="${photoState.first}" class="photo_path">
+                    <div class="mask"></div>
+                    <div class="big">
+                        <img th:src="${photo_path.getPath_name()}" width="800px" alt="" class="bigimg">
+                    </div>
+            </div>
+            <div class="preview_list">
+                <a href="javascript:;" class="arrow_prev"><</a>
+                <a href="javascript:;" class="arrow_next">></a>
+                <ul class="list_item">
+
+                    <li th:each="photo_path,photoState:${Photo_Path_List}">
+                        <img th:src="${photo_path.getPath_name()}" alt="" width="52px">
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="itemInfo_wrap fr">
+            <div class="sku_name">
+                <span th:text="${goods_info.goods_name}"></span>
+            </div>
+            <div class="news">
+                <span th:text="${goods_info.goods_describe}"></span>
+            </div>
+            <div class="summary">
+                <dl class="summary_price">
+                    <dt>闪购价</dt>
+                    <dd>
+                        <i class="price"><span th:text="${goods_info.goods_actual_price}"></span>   <del class="price-del"><span th:text="${goods_info.goods_price}"></span></del></i>
+                        <a href="#">降价通知</a>
+                        <div class="remark">累计评价51万+</div>
+                    </dd>
+                </dl>
+                <dl class="summary_promotion">
+                    <dt>促销</dt>
+                    <dd>
+                        <em>加购价</em> 满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换购热销商品 详情》
+                    </dd>
+                </dl>
+                <dl class="summary_support">
+                    <dt>支持</dt>
+                    <dd>以旧换新，闲置手机回收 4G套餐超值抢 礼品购</dd>
+                </dl>
+                <dl class="summary_stock">
+                    <dt>配送至</dt>
+                    <dd>
+                        杭州市临安区青山湖 有货 支持 99元免运费 | 货到付款 | 211限时达
+                        <br>由卖家发货，并提供售后服务。11:00前完成下单，预计明天送达
+                    </dd>
+                </dl>
+                <dl class="choose_color" style="height: 160px">
+                    <div class="col-md-1" style="padding: 0"><dt>属性</dt></div>
+                    <div class="col-md-10 property">
+                        <ul class="property-ul">
+                        </ul>
+                    </div>
+                </dl>
+                <dl class="choose_btns">
+                    <dt>数量</dt>
+                    <div class="choose_amount">
+                        <a href="javascript:;" class="reduce">-</a>
+                        <input type="text" maxlength="2" id="goods_sum" value="1">
+                        <a href="javascript:;" class="add">+</a>
+                    </div>
+                    <button class="button btn_buy" id="btn_buy">立即购买</button>
+                    <button class="button addCar" id="btn_add_cart">加入购物车</button>
+                </dl>
+            </div>
+        </div>
+        </div>
+
+    </div>
+</body>
+</html>
